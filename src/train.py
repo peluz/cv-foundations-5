@@ -11,12 +11,12 @@ DIRNAME = os.path.dirname(__file__)
 TRAIN_DIR = os.path.join(DIRNAME, "../data/train/")
 
 
-def train(pooling="avg", num_units=200, batch_size=16, name="test"):
+def train(pooling="avg", num_units=1024, batch_size=16, name="test"):
     model_dir = os.path.join(DIRNAME, "models/{}".format(name))
     os.makedirs(model_dir, exist_ok=True)
 
     datagen = ImageDataGenerator(horizontal_flip=True,
-                                 validation_split=0.1)
+                                 validation_split=0.2)
 
     train_generator = datagen.flow_from_directory(TRAIN_DIR,
                                                   (300, 250),

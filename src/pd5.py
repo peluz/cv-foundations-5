@@ -13,7 +13,7 @@ parser.add_argument("--batchSize", help="Tamanho do batch", type=int,
 parser.add_argument("--pooling", help="Método de pooling das características",
                     choices=("avg", "max"), default="avg")
 parser.add_argument("--numUnits", help="Número de unidades na camada densa",
-                    type=int, default=200)
+                    type=int, default=1024)
 parser.add_argument("--train", help="Treinar modelo",
                     action="store_true", default=False)
 parser.add_argument("--model", help="Nome do modelo a ser salvo/carregado",
