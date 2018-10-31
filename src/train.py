@@ -16,6 +16,9 @@ def train(pooling="avg", num_units=1024, batch_size=2, name="test", drop_prob=0.
     os.makedirs(model_dir, exist_ok=True)
 
     datagen = ImageDataGenerator(horizontal_flip=True,
+                                 width_shift_range=0.2,
+                                 height_shift_range=0.2,
+                                 zoom_range=0.1,
                                  validation_split=0.2)
 
     train_generator = datagen.flow_from_directory(TRAIN_DIR,
@@ -42,7 +45,7 @@ def train(pooling="avg", num_units=1024, batch_size=2, name="test", drop_prob=0.
     # for layer in base_model.layers:
     #     layer.trainable = False
 
-    optimizer = SGD(momentum=0.9, clipnorm=5.)
+    optimizer = SGD(lr=0.001, momentum=0.9, clipnorm=5.)
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizer,
@@ -53,15 +56,15 @@ def train(pooling="avg", num_units=1024, batch_size=2, name="test", drop_prob=0.
     saver = ModelCheckpoint("{}/model.hdf5".format(model_dir), verbose=1,
                             save_best_only=True, monitor="val_acc",
                             mode="max")
-    stopper = EarlyStopping(patience=6, verbose=1, monitor="val_acc",
+    stopper = EarlyStopping(patience=20, verbose=1, monitor="val_acc",
                             mode="max")
     reduce_lr = ReduceLROnPlateau(monitor="loss", factor=0.5,
-                                  patience=4, verbose=1, min_lr=0.001)
+                                  patience=5, verbose=1, min_lr=0.0001)
 
     model.fit_generator(train_generator, steps_per_epoch=train_generator.samples // batch_size,
                         validation_data=valid_generator,
                         validation_steps=valid_generator.samples // batch_size,
                         verbose=2,
-                        epochs=20,
+                        epochs=50,
                         callbacks=[tensorboard, saver, stopper, reduce_lr])
     print("Modelo {} treinado!".format(name))
