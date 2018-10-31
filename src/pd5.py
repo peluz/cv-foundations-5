@@ -1,5 +1,11 @@
 import argparse
 from train import train
+from evaluate import evaluate
+from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
+import os
+
+DIRNAME = os.path.dirname(__file__)
 
 parser = argparse.ArgumentParser(
     description="Image Classification")
@@ -33,6 +39,8 @@ def main(r1, r2, train_model,
                   batch_size=batch_size,
                   name=model,
                   drop_prob=drop_prob)
+        clf = load_model(os.path.join(DIRNAME, "models/{}/model.hdf5".format(model)))
+        evaluate(clf, batch_size)
 
 
 if __name__ == "__main__":
