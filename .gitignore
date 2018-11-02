@@ -1,5 +1,4 @@
 models/
 __pycache__
 data/
-StarSpace/
-Keras-VGG16-places365/
+.idea/

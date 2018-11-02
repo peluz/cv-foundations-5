@@ -9,3 +9,39 @@ drop_0.5
 
 drop_0.8
 	Loss, Acurácia:  [0.5298773134838007, 0.8920911528150134]
+
+noDrop_Freeze
+	Loss, Acurácia:  [0.4036851289127557, 0.8716487935656837]
+
+drop_0.2_Freeze
+	Loss, Acurácia:  [0.42435850117340795, 0.8971179624664879]
+
+drop_0.5_Freeze
+	Loss, Acurácia:  [0.39467501682569145, 0.8810321715817694]
+
+drop_0.8_Freeze
+	Loss, Acurácia:  [0.5298773134838007, 0.8920911528150134]
+
+bonus_noDrop
+	Loss, Acurácia:  [0.4036851289127557, 0.8716487935656837]
+
+bonus_drop_0.2
+	Loss, Acurácia:  [0.42435850117340795, 0.8971179624664879]
+
+bonus_drop_0.5
+	Loss, Acurácia:  [0.39467501682569145, 0.8810321715817694]
+
+bonus_drop_0.8
+	Loss, Acurácia:  [0.5298773134838007, 0.8920911528150134]
+
+bonus_noDrop_Freeze
+	Loss, Acurácia:  [0.4036851289127557, 0.8716487935656837]
+
+bonus_drop_0.2_Freeze
+	Loss, Acurácia:  [0.42435850117340795, 0.8971179624664879]
+
+bonus_drop_0.5_Freeze
+	Loss, Acurácia:  [0.39467501682569145, 0.8810321715817694]
+
+bonus_drop_0.8_Freeze
+	Loss, Acurácia:  [0.5298773134838007, 0.8920911528150134]

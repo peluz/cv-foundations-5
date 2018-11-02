@@ -5,14 +5,15 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceL
 from keras.optimizers import SGD
 from keras import Model
 import os
-
-
+import sys
 DIRNAME = os.path.dirname(__file__)
 TRAIN_DIR = os.path.join(DIRNAME, "../data/train/")
+sys.path.append(os.path.join(DIRNAME, "Keras-VGG16-places365/"))
+from vgg16_places_365 import VGG16_Places365
 
 
 def train(pooling="avg", num_units=1024, batch_size=2,
-          name="test", drop_prob=0., bonus=False):
+          name="test", drop_prob=0., bonus=False, freeze=False):
     model_dir = os.path.join(DIRNAME, "models/{}".format(name))
     os.makedirs(model_dir, exist_ok=True)
 
@@ -33,22 +34,25 @@ def train(pooling="avg", num_units=1024, batch_size=2,
                                                   subset='validation')
 
     if bonus:
-        pass
+        base_model = VGG16_Places365(include_top=False, weights='places',
+                                     input_shape=(300, 250, 3),
+                                     pooling=pooling)
     else:
 
         base_model = Xception(include_top=False, weights="imagenet",
                               input_shape=(300, 250, 3),
                               pooling=pooling)
 
-        x = base_model.output
-        x = Dense(num_units, activation="relu")(x)
-        x = Dropout(drop_prob)(x)
-        predictions = Dense(15, activation="softmax")(x)
+    x = base_model.output
+    x = Dense(num_units, activation="relu")(x)
+    x = Dropout(drop_prob)(x)
+    predictions = Dense(15, activation="softmax")(x)
 
-        model = Model(inputs=base_model.input, outputs=predictions)
+    model = Model(inputs=base_model.input, outputs=predictions)
 
-    # for layer in base_model.layers:
-    #     layer.trainable = False
+    if freeze:  
+        for layer in base_model.layers:
+            layer.trainable = False
 
     optimizer = SGD(lr=0.001, momentum=0.9, clipnorm=5.)
 
@@ -66,7 +70,7 @@ def train(pooling="avg", num_units=1024, batch_size=2,
     reduce_lr = ReduceLROnPlateau(monitor="loss", factor=0.5,
                                   patience=5, verbose=1, min_lr=0.0001)
 
-    model.fit_generator(train_generator, steps_per_epoch=train_generator.samples // batch_size,
+    model.fit_generator(train_generator, steps_per_epoch=train_generator.samples // batch_size + 1,
                         validation_data=valid_generator,
                         validation_steps=valid_generator.samples // batch_size,
                         verbose=2,
