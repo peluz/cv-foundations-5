@@ -14,6 +14,8 @@ group.add_argument("--r1", action="store_true",
                    help="Requisito 1")
 group.add_argument("--r2", action="store_true",
                    help="Requisito 2")
+group.add_argument("--bonus", help="Usar modelo bonus",
+                   action="store_true")
 parser.add_argument("--batchSize", help="Tamanho do batch", type=int,
                     default=2)
 parser.add_argument("--pooling", help="Método de pooling das características",
@@ -29,7 +31,8 @@ parser.add_argument("--dropProb", help="Probabilidade de dropout",
 
 
 def main(r1, r2, train_model,
-         batch_size, pooling, numUnits, model, drop_prob):
+         batch_size, pooling, numUnits, model,
+         drop_prob, bonus):
     if r1:
         pass
     elif r2:
@@ -41,9 +44,20 @@ def main(r1, r2, train_model,
                   drop_prob=drop_prob)
         clf = load_model(os.path.join(DIRNAME, "models/{}/model.hdf5".format(model)))
         evaluate(clf, batch_size)
+    elif bonus:
+        if train_model:
+            train(pooling=pooling,
+                  num_units=numUnits,
+                  batch_size=batch_size,
+                  name=model,
+                  drop_prob=drop_prob,
+                  bonus=True)
+        clf = load_model(os.path.join(DIRNAME, "models/{}/model.hdf5".format(model)))
+        evaluate(clf, batch_size)
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
     main(args.r1, args.r2, args.train, args.batchSize,
-         args.pooling, args.numUnits, args.model, args.dropProb)
+         args.pooling, args.numUnits, args.model, args.dropProb,
+         args.bonus)

@@ -11,7 +11,8 @@ DIRNAME = os.path.dirname(__file__)
 TRAIN_DIR = os.path.join(DIRNAME, "../data/train/")
 
 
-def train(pooling="avg", num_units=1024, batch_size=2, name="test", drop_prob=0.):
+def train(pooling="avg", num_units=1024, batch_size=2,
+          name="test", drop_prob=0., bonus=False):
     model_dir = os.path.join(DIRNAME, "models/{}".format(name))
     os.makedirs(model_dir, exist_ok=True)
 
@@ -31,16 +32,20 @@ def train(pooling="avg", num_units=1024, batch_size=2, name="test", drop_prob=0.
                                                   batch_size=batch_size,
                                                   subset='validation')
 
-    base_model = Xception(include_top=False, weights="imagenet",
-                          input_shape=(300, 250, 3),
-                          pooling=pooling)
+    if bonus:
+        pass
+    else:
 
-    x = base_model.output
-    x = Dense(num_units, activation="relu")(x)
-    x = Dropout(drop_prob)(x)
-    predictions = Dense(15, activation="softmax")(x)
+        base_model = Xception(include_top=False, weights="imagenet",
+                              input_shape=(300, 250, 3),
+                              pooling=pooling)
 
-    model = Model(inputs=base_model.input, outputs=predictions)
+        x = base_model.output
+        x = Dense(num_units, activation="relu")(x)
+        x = Dropout(drop_prob)(x)
+        predictions = Dense(15, activation="softmax")(x)
+
+        model = Model(inputs=base_model.input, outputs=predictions)
 
     # for layer in base_model.layers:
     #     layer.trainable = False
