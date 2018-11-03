@@ -50,7 +50,7 @@ def train(pooling="avg", num_units=1024, batch_size=2,
 
     model = Model(inputs=base_model.input, outputs=predictions)
 
-    if freeze: 
+    if freeze:  
         for layer in base_model.layers:
             layer.trainable = False
 
@@ -72,7 +72,7 @@ def train(pooling="avg", num_units=1024, batch_size=2,
 
     model.fit_generator(train_generator, steps_per_epoch=train_generator.samples // batch_size + 1,
                         validation_data=valid_generator,
-                        validation_steps=valid_generator.samples // batch_size,
+                        validation_steps=valid_generator.samples // batch_size + 1,
                         verbose=2,
                         epochs=50,
                         callbacks=[tensorboard, saver, stopper, reduce_lr])

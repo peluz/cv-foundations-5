@@ -2,7 +2,6 @@ import argparse
 from train import train
 from evaluate import evaluate
 from keras.models import load_model
-from keras.preprocessing.image import ImageDataGenerator
 import os
 
 DIRNAME = os.path.dirname(__file__)
@@ -46,7 +45,7 @@ def main(r1, r2, train_model,
                   drop_prob=drop_prob,
                   freeze=freeze)
         clf = load_model(os.path.join(DIRNAME, "models/{}/model.hdf5".format(model)))
-        evaluate(clf, batch_size)
+        evaluate(clf, batch_size, confusionMatrix=True)
     elif bonus:
         if train_model:
             train(pooling=pooling,
@@ -57,7 +56,7 @@ def main(r1, r2, train_model,
                   bonus=True,
                   freeze=freeze)
         clf = load_model(os.path.join(DIRNAME, "models/{}/model.hdf5".format(model)))
-        evaluate(clf, batch_size)
+        evaluate(clf, batch_size, confusionMatrix=True)
 
 
 if __name__ == "__main__":
