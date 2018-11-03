@@ -50,7 +50,7 @@ def train(pooling="avg", num_units=1024, batch_size=2,
 
     model = Model(inputs=base_model.input, outputs=predictions)
 
-    if freeze:  
+    if freeze: 
         for layer in base_model.layers:
             layer.trainable = False
 
