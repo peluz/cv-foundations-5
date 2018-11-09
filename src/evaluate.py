@@ -36,4 +36,21 @@ def evaluate(model, batch_size=2, confusionMatrix=False):
                                     target_names=target_names))
         fig = plt.figure(figsize=(10, 10))
         sn.heatmap(df_cm, annot=True)
-        plt.show()
+
+def evaluate_bov(y_pred,y_label,name,confusionMatrix=False):
+    acc = accuracy_score(y_label, y_pred)
+    print("Acurácia: ", acc)
+
+    if confusionMatrix:
+        target_names = ["Bedroom", "Coast", "Forest", "Highway", "Industrial",
+                        "InsideCity", "Kitchen", "LivingRoom", "Mountain",
+                        "Office", "OpenCountry", "Store", "Street", "Suburb",
+                        "TallBuilding"]
+        cm = confusion_matrix(y_label, y_pred)
+        cm = cm / np.sum(cm.astype(np.float), axis=1)[:, np.newaxis]
+        df_cm = pd.DataFrame(np.round(cm, 2), index = [i for i in target_names],
+                  columns = [i for i in target_names])
+        fig = plt.figure(figsize=(10, 10))
+        sn.heatmap(df_cm, annot=True)
+
+        plt.savefig("{}_{}.png".format(name,acc))
