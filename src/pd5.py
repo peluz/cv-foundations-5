@@ -1,6 +1,7 @@
 import argparse
 from train import train
-from evaluate import evaluate
+from evaluate import evaluate,evaluate_bov
+from Bag import BOV
 from keras.models import load_model
 import os
 
@@ -14,6 +15,8 @@ group.add_argument("--r1", action="store_true",
 group.add_argument("--r2", action="store_true",
                    help="Requisito 2")
 group.add_argument("--bonus", help="Usar modelo bonus",
+                   action="store_true")
+parser.add_argument("--hyper", help="Faz testes com hyperparams no BOVW",
                    action="store_true")
 parser.add_argument("--batchSize", help="Tamanho do batch", type=int,
                     default=2)
@@ -31,11 +34,23 @@ parser.add_argument("--dropProb", help="Probabilidade de dropout",
                     type=float, default=0.)
 
 
+
 def main(r1, r2, train_model,
          batch_size, pooling, numUnits, model,
-         drop_prob, bonus, freeze):
+         drop_prob, bonus, freeze, hyper):
     if r1:
-        pass
+        if hyper:
+            for h in (150,200,250,300,350):
+                print("Testing no_clusters ",h)
+                bov = BOV(no_clusters=h)
+                bov.trainModel()
+                bov.testModel()
+                evaluate_bov(bov.labels,bov.predictions,str(h),confusionMatrix=True)
+        else:
+            bov = BOV(no_clusters=100)
+            bov.trainModel()
+            bov.testModel()
+            evaluate_bov(bov.labels,bov.predictions,"BOVW",confusionMatrix=True)
     elif r2:
         if train_model:
             train(pooling=pooling,
@@ -63,4 +78,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args.r1, args.r2, args.train, args.batchSize,
          args.pooling, args.numUnits, args.model, args.dropProb,
-         args.bonus, args.freeze)
+         args.bonus, args.freeze,args.hyper)
